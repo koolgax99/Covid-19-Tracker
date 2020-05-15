@@ -96,8 +96,8 @@ class MyGrid(GridLayout):
 
         list1=[]
         dfconfirmed = pd.read_excel(r"data8.1.xlsx", sheet_name=0)
-        for i in range(1,len(RiskPlaces)):
-                x = dfconfirmed['Country'][RiskPlaces[i-1]]
+        for i in range(0,len(RiskPlaces)):
+                x = dfconfirmed['Country'][RiskPlaces[i]]
                 list1.append(x)
 
 
@@ -261,15 +261,14 @@ class MyGrid(GridLayout):
         dfconfirmed= dfconfirmed.loc[:,'1/22/20':]
         dfdeath= dfdeath.loc[:,'1/22/20':]
         index = list(dfdeath.index)
-        RiskPlaces = list()
+        RiskPlaces = []
         for i in index:
             for j, x in zip(dfconfirmed, dfdeath):
-                if (dfdeath.loc[i][x] == 0) | (dfconfirmed.loc[i][j] == 0):
-                    case_fatality = 0
-                elif dfconfirmed.loc[i][j] != 0:
+                if (dfconfirmed.loc[i][j] != 0):
                     case_fatality = (dfdeath.loc[i][x] / dfconfirmed.loc[i][j]) * 100
                 else:
                     case_fatality = 0
+                
                 y = (4 / 100)*dfconfirmed.loc[i][j]
 
                 if ((case_fatality != 0) & (case_fatality >= y)):
@@ -277,21 +276,18 @@ class MyGrid(GridLayout):
                         break
                     else:
                         RiskPlaces.append(i)
-        
+                
         list1=[]
         list2=[]
         dfconfirmed = pd.read_excel(r"data8.1.xlsx", sheet_name=0)
-        for i in range(0,81):
-            if(i==0):
-                print("Afghanistan")
-                list2.append(1092)
-            else:
-                x = dfconfirmed['Country'][RiskPlaces[i-1]]
-                y = dfconfirmed['4/21/20'][RiskPlaces[i-1]]
+        for i in range(0,len(RiskPlaces)):
+                x = dfconfirmed['Country'][RiskPlaces[i]]
+                y = dfconfirmed['4/21/20'][RiskPlaces[i]]
                 list1.append(x)
                 list2.append(y)
+
         plt.plot(RiskPlaces,list2)       
-        plt.xlabel('sno. of countries')
+        plt.xlabel('SNo. of Countries')
         plt.ylabel('cases on most recent date(21/04/20')
         plt.show()
 
