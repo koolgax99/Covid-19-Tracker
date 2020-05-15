@@ -73,20 +73,19 @@ class MyGrid(GridLayout):
         self.add_widget(self.inside)
         
     def pressed1(self,instance):
-        dfconfirmed = pd.read_excel(r"data8.1.xlsx", sheet_name=0)
+        dfconfirmed = pd.read_excel(r"data8.1.xlsx", sheet_name=0) 
         dfdeath = pd.read_excel(r"data8.2.xlsx",sheet_name=0 )
         dfconfirmed= dfconfirmed.loc[:,'1/22/20':]
         dfdeath= dfdeath.loc[:,'1/22/20':]
         index = list(dfdeath.index)
-        RiskPlaces = list()
+        RiskPlaces = []
         for i in index:
-            for j, x in zip(dfconfirmed, dfdeath):
-                if (dfdeath.loc[i][x] == 0) | (dfconfirmed.loc[i][j] == 0):
-                    case_fatality = 0
-                elif dfconfirmed.loc[i][j] != 0:
+            for j, x in zip(dfconfirmed, dfdeath):  #zip for parallel iteration
+                if (dfconfirmed.loc[i][j] != 0):
                     case_fatality = (dfdeath.loc[i][x] / dfconfirmed.loc[i][j]) * 100
-                else:
+                else :
                     case_fatality = 0
+                    
                 y = (4 / 100)*dfconfirmed.loc[i][j]
 
                 if ((case_fatality != 0) & (case_fatality >= y)):
@@ -94,20 +93,20 @@ class MyGrid(GridLayout):
                         break
                     else:
                         RiskPlaces.append(i)
+
         list1=[]
         dfconfirmed = pd.read_excel(r"data8.1.xlsx", sheet_name=0)
-        for i in range(0,81):
-            if(i==0):
-                print("Afghanistan")
-            else:
+        for i in range(1,len(RiskPlaces)):
                 x = dfconfirmed['Country'][RiskPlaces[i-1]]
                 list1.append(x)
+
+
         layout=GridLayout(cols=5 ,padding=10)
-        for i in range (0,80):       
+        for i in range (0,len(list1)):       
             popupLabel=Label(text=list1[i])
             layout.add_widget(popupLabel)
         popup=Popup(title="Top countries at high risk for next two years:",content=layout,size_hint=(None,None),size=(600,300),background='9.jpg')
-        popup.open()               
+        popup.open()            
         
     
     def pressed2(self,instance):
